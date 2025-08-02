@@ -22,7 +22,6 @@ resource "azapi_resource" "rg_lock" {
   parent_id = module.virtual_networks[each.key].resource.parent_id
 
   depends_on = [
-
     module.peering_hub_outbound,
     module.peering_hub_inbound,
     module.peering_mesh,
@@ -57,8 +56,6 @@ module "virtual_networks" {
 
   tags             = each.value.tags
   enable_telemetry = var.enable_telemetry
-
-  # depends_on = [azapi_resource.rg]
 }
 
 # module.peering_hub_outbound uses the peering submodule from theAzure Verified Module
