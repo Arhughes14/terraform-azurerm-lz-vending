@@ -134,6 +134,24 @@ locals {
   # This is used in the outputs.tf file to return the virtual network resource ids.
   virtual_network_resource_ids = var.virtual_network_enabled ? module.virtualnetwork[0].virtual_network_resource_ids : {}
 
+  # resource_group_data is the unique set of resource groups to create to support the virtual network resources
+  resource_group_data = {
+    for v in var.virtual_networks : v.resource_group_name => {
+      name     = v.resource_group_name
+      location = coalesce(v.location, var.location)
+      # lock      = v.resource_group_lock_enabled
+      # lock_name = v.resource_group_lock_name
+      tags = v.resource_group_tags
+    }
+    if v.resource_group_creation_enabled
+  }
+
+  resource_groups = var.resource_group_creation_enabled ? merge(
+    var.resource_groups,
+    local.resource_group_data
+  ) : local.resource_group_data
+
+
   # route_table_routes is a list of objects containing the routes that need to be converted from a map to a list to match the submodule input variable definition.
   route_tables = {
     for rt_k, rt_v in var.route_tables : rt_k => {
