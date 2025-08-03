@@ -139,8 +139,6 @@ locals {
     for v in var.virtual_networks : v.resource_group_name => {
       name     = v.resource_group_name
       location = coalesce(v.location, var.location)
-      # lock      = v.resource_group_lock_enabled
-      # lock_name = v.resource_group_lock_name
       tags = v.resource_group_tags
     }
     if v.resource_group_creation_enabled
