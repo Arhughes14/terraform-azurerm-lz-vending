@@ -8,7 +8,7 @@ resource "azapi_resource" "rg_lock" {
       lock      = v.resource_group_lock_enabled
       vnet_key  = k
     }
-    if try(v.resource_group_lock_enabled, false)
+    if v.resource_group_lock_enabled
   }
 
   type = "Microsoft.Authorization/locks@2017-04-01"
