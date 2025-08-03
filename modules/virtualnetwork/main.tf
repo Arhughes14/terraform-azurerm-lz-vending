@@ -1,7 +1,6 @@
 # azapi_resource.rg_lock is an optional resource group lock that can be used
 # to prevent accidental deletion.
 resource "azapi_resource" "rg_lock" {
-  # for_each = { for i in local.resource_group_data : i.name => i if i.lock }
   for_each = {
     for k, v in var.virtual_networks :
     v.name => {
