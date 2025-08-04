@@ -1,15 +1,7 @@
 # azapi_resource.rg_lock is an optional resource group lock that can be used
 # to prevent accidental deletion.
 resource "azapi_resource" "rg_lock" {
-  for_each = {
-    for k, v in var.virtual_networks :
-    v.name => {
-      lock_name = v.resource_group_lock_name
-      lock      = v.resource_group_lock_enabled
-      vnet_key  = k
-    }
-    if v.resource_group_lock_enabled
-  }
+  for_each = { for i in var.virtual_networks : i.name => i if i.resource_group_lock_enabled }
 
   type = "Microsoft.Authorization/locks@2017-04-01"
   body = {
@@ -17,7 +9,7 @@ resource "azapi_resource" "rg_lock" {
       level = "CanNotDelete"
     }
   }
-  name      = coalesce(each.value.lock_name, substr("lock-${each.key}", 0, 90))
+  name      = coalesce(each.value.resource_group_lock_name, substr("lock-${each.key}", 0, 90))
   parent_id = module.virtual_networks[each.key].resource.parent_id
 
   depends_on = [
